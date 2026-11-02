@@ -20,16 +20,14 @@ dashboard screens — flat fills, 0px radius, hard 1px borders, ANSI accents, a
 
 ![Kiro Crew Term (v3) — design direction across the dashboard screens](.github/preview/preview.png)
 
-> **What this pack delivers today vs. the target.** This is a Kiro Crew *theme
-> pack*, so it can only change the **palette and fonts**, plus limited
-> structural CSS on a small set of runtime-allowlisted surfaces. The dashboard's
-> components (session cards, file tree, tab strips, status pills, the icon rail)
-> use framework-generated class names a theme pack cannot target, so their
-> **shape, radius, and layout stay as the dashboard draws them — only recolored
-> and re-fonted.** The flat/sharp terminal *structure* shown above is the
-> design goal; reaching it fully would require native shape/layout theming
-> support in the dashboard that does not exist yet. Install this for the v3
-> **color + type** experience; treat the mockup as the roadmap.
+> **What this pack delivers.** Palette, fonts, **and the flat/sharp shape** —
+> all from the pack itself, installed once via Settings → Display. The
+> structural CSS in `styles/overrides.css` zeroes the dashboard's own
+> `--radius-*` tokens (which its utility classes resolve through), so every
+> rounded surface squares in one move, with hard 1px borders and a faint
+> terminal grain on top. No per-browser userstyle or DevTools paste is needed
+> for the shape anymore; the companion userstyle below remains only as an
+> optional belt-and-braces layer.
 
 ## Install
 
@@ -47,20 +45,22 @@ Re-installing overwrites the previous copy — that is the update path.
   hues read like the v3 TUI). Diff colors are left to the dashboard to
   auto-derive from each polarity.
 - Sans face → Sans option; Mono face → Mono option **and** all code surfaces.
-- `styles/overrides.css` applies the flat/sharp language on the runtime's
-  allowlisted surfaces: 0px radius and hard borders on `.sidebar`,
-  `.chat-container`, `.message-bubble`, `.code-block`, `.input-area` and
-  `button.primary`, an accent underline on `.topbar`, a left accent caret-rail
-  on the input, and a faint terminal grain on `body`. These are the only
-  surfaces a theme pack can reach — see the companion userstyle below for the
-  rest of the dashboard.
+- `styles/overrides.css` applies the flat/sharp language across the whole
+  dashboard by zeroing its `--radius-*` token scale (`--radius-sm` … `--radius-3xl`)
+  on `:root` plus a `*` radius sweep, so every rounded surface squares at once.
+  It then drops soft shadows for crisp seams, outlines the primary action
+  (`.btn-sweep`) with a hard accent border, squares the composer, sets the
+  message-wrapper padding (`.message-bubble.msg-content`), and lays a faint
+  terminal grain over `body`. These target the dashboard's real DOM (its utility
+  classes and radius tokens), not placeholder class names — so the shape
+  actually lands on install.
 
-## Flat/sharp shape — companion userstyle (optional)
+## Flat/sharp shape — companion userstyle (optional, legacy)
 
-The theme pack recolors the dashboard but **cannot change component shape**
-(radius, borders, layout): the dashboard is built on framework-generated utility
-classes a theme pack is not allowed to target. To get the full flat/sharp
-terminal *structure* shown in the preview, install the companion **userstyle**:
+The pack now ships the flat/sharp shape itself (see above), so this userstyle is
+**no longer required** — it predates in-pack structural CSS and is kept as an
+optional per-browser layer (e.g. if you run the dashboard under an origin the
+pack's radius-zeroing somehow doesn't reach). To use it:
 
 1. Install a userstyle manager — [Stylus](https://add0n.com/stylus.html)
    (Chrome/Firefox) is recommended.
@@ -70,20 +70,18 @@ terminal *structure* shown in the preview, install the companion **userstyle**:
 3. Adjust the `url-prefix(...)` lines at the top if your dashboard runs on a
    host/port other than `localhost:5476`.
 
-How it works: the dashboard's rounded corners resolve through its own
-`--radius-*` CSS variables, so the userstyle zeroes those (`--radius-lg: 0`,
-etc.) and squares every surface in one move — verified against the live DOM.
-It changes **shape only**; the palette and fonts still come from the theme pack,
-so the two layers compose.
-
-> This is a per-browser install, not part of the shareable theme pack — that
-> separation is the whole point: colour for everyone via the pack, shape for
-> whoever wants it via the userstyle.
+How it works: it applies the same radius-zeroing as the pack's
+`styles/overrides.css` (zero the `--radius-*` vars the dashboard rounds
+through). Since the pack already does this on install, the userstyle is
+redundant on a current Kiro Crew — it is retained for older builds or
+non-standard origins.
 
 ### Desktop app (Electron)
 
-The desktop app has no custom-CSS setting and can't load a Stylus userstyle, so
-use its **DevTools** instead (DevTools must be enabled):
+The pack's in-pack shape installs natively in the desktop app too, so the
+DevTools route below is now a **legacy fallback** — only needed on an older Kiro
+Crew that predates Level 1 structural CSS. If you want it anyway (DevTools must
+be enabled):
 
 1. Open DevTools in the desktop app.
 2. Paste the contents of `.github/userstyle/console-inject.js` into the **Console** and
