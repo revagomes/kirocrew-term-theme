@@ -20,14 +20,17 @@ dashboard screens — flat fills, 0px radius, hard 1px borders, ANSI accents, a
 
 ![Kiro Crew Term (v3) — design direction across the dashboard screens](.github/preview/preview.png)
 
-> **What this pack delivers.** Palette, fonts, **and the flat/sharp shape** —
-> all from the pack itself, installed once via Settings → Display. The
-> structural CSS in `styles/overrides.css` zeroes the dashboard's own
-> `--radius-*` tokens (which its utility classes resolve through), so every
-> rounded surface squares in one move, with hard 1px borders and a faint
-> terminal grain on top. No per-browser userstyle or DevTools paste is needed
-> for the shape anymore; the companion userstyle below remains only as an
-> optional belt-and-braces layer.
+> **What this pack delivers.** The full palette and fonts everywhere, plus the
+> flat/sharp language (0px radius, hard 1px borders, terminal grain) on the six
+> surfaces a theme pack is allowed to reach: the topbar, sidebar, chat
+> container, message bubbles, composer, and code blocks. Kiro Crew enforces a
+> **runtime selector allowlist** — an `overrides.css` rule aimed at anything
+> else (a utility class, `*`, `:root`) is silently dropped — so a pack cannot
+> zero the dashboard's global radius tokens or restyle arbitrary components. To
+> flatten the remaining rounded chrome (cards, chips, pills, tab strips), use
+> the companion **userstyle** below, which runs browser-side and is not bound by
+> the allowlist. Pack = color + fonts + sanctioned-surface shape; userstyle =
+> the rest of the shape.
 
 ## Install
 
@@ -45,22 +48,25 @@ Re-installing overwrites the previous copy — that is the update path.
   hues read like the v3 TUI). Diff colors are left to the dashboard to
   auto-derive from each polarity.
 - Sans face → Sans option; Mono face → Mono option **and** all code surfaces.
-- `styles/overrides.css` applies the flat/sharp language across the whole
-  dashboard by zeroing its `--radius-*` token scale (`--radius-sm` … `--radius-3xl`)
-  on `:root` plus a `*` radius sweep, so every rounded surface squares at once.
-  It then drops soft shadows for crisp seams, outlines the primary action
-  (`.btn-sweep`) with a hard accent border, squares the composer, sets the
-  message-wrapper padding (`.message-bubble.msg-content`), and lays a faint
-  terminal grain over `body`. These target the dashboard's real DOM (its utility
-  classes and radius tokens), not placeholder class names — so the shape
-  actually lands on install.
+- `styles/overrides.css` applies the flat/sharp language on the six surfaces the
+  runtime allows a pack to target: 0px radius + hard borders on `.topbar`,
+  `.sidebar`, `.chat-container`, `.message-bubble`, `.input-area` and
+  `.code-block`, an accent underline on the topbar, a left accent caret-rail on
+  the composer (`.input-area:focus-within`), message-wrapper padding
+  (`.message-bubble.msg-content`), a flat `button.primary`, and a faint terminal
+  grain on `body`. The dashboard drops any rule outside its allowlist (no `*`,
+  no `:root`, no utility classes), so these are the only surfaces a pack can
+  reach — the userstyle below covers the rest.
 
-## Flat/sharp shape — companion userstyle (optional, legacy)
+## Flat/sharp shape — companion userstyle (for the rest of the dashboard)
 
-The pack now ships the flat/sharp shape itself (see above), so this userstyle is
-**no longer required** — it predates in-pack structural CSS and is kept as an
-optional per-browser layer (e.g. if you run the dashboard under an origin the
-pack's radius-zeroing somehow doesn't reach). To use it:
+The pack flattens the six surfaces it is allowed to target, but the dashboard's
+other rounded chrome (cards, chips, status pills, tab strips) lives on
+framework utility classes a theme pack **cannot** reach — Kiro Crew's runtime
+drops any `overrides.css` rule outside its selector allowlist, including the
+`:root` radius-token zeroing that would otherwise square everything. To flatten
+that remaining chrome, install the companion **userstyle**, which runs
+browser-side and is not bound by the allowlist:
 
 1. Install a userstyle manager — [Stylus](https://add0n.com/stylus.html)
    (Chrome/Firefox) is recommended.
@@ -70,17 +76,17 @@ pack's radius-zeroing somehow doesn't reach). To use it:
 3. Adjust the `url-prefix(...)` lines at the top if your dashboard runs on a
    host/port other than `localhost:5476`.
 
-How it works: it applies the same radius-zeroing as the pack's
-`styles/overrides.css` (zero the `--radius-*` vars the dashboard rounds
-through). Since the pack already does this on install, the userstyle is
-redundant on a current Kiro Crew — it is retained for older builds or
-non-standard origins.
+How it works: the dashboard's rounded corners resolve through its own
+`--radius-*` CSS variables. A theme pack cannot touch those (the runtime drops
+`:root` rules), but a browser-side userstyle can — it zeroes `--radius-lg`,
+`--radius-xl`, etc. and squares every surface the pack couldn't reach, in one
+move. It changes **shape only**; the palette, fonts, and the six sanctioned
+surfaces still come from the pack, so the two layers compose.
 
 ### Desktop app (Electron)
 
-The pack's in-pack shape installs natively in the desktop app too, so the
-DevTools route below is now a **legacy fallback** — only needed on an older Kiro
-Crew that predates Level 1 structural CSS. If you want it anyway (DevTools must
+The desktop app has no custom-CSS setting and can't load a Stylus userstyle, so
+to flatten the chrome the pack can't reach, use its **DevTools** (DevTools must
 be enabled):
 
 1. Open DevTools in the desktop app.
@@ -89,10 +95,10 @@ be enabled):
 3. Not persistent across restarts. To avoid re-pasting, save it once as a
    **DevTools Snippet** (Sources → Snippets) and run it after each launch.
 
-The snippet injects the same radius-zeroing CSS as the userstyle. For a
-fully set-and-forget experience, run the dashboard in a browser with Stylus —
-the desktop app has no supported auto-load hook, and patching its bundled
-assets is unsupported and breaks on update.
+The snippet injects the same radius-zeroing CSS as the userstyle, flattening the
+chrome the pack cannot. For a fully set-and-forget experience, run the dashboard
+in a browser with Stylus — the desktop app has no supported auto-load hook, and
+patching its bundled assets is unsupported and breaks on update.
 
 ## Notes
 
