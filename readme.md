@@ -33,7 +33,7 @@ dashboard screens — flat fills, 0px radius, hard 1px borders, ANSI accents, a
 
 Settings → Display → Install theme, then paste either:
 
-- this repo URL (`https://github.com/revagomes/kirocrew-term`), or
+- this repo URL (`https://github.com/revagomes/kirocrew-term-theme`), or
 - the local folder path if you have it checked out.
 
 Re-installing overwrites the previous copy — that is the update path.
