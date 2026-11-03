@@ -1,62 +1,29 @@
 /* Kiro Crew Term (v3) — flat, sharp terminal reskin (Level 1, in-pack).
  *
- * Targets the dashboard's REAL DOM. The UI is built on Tailwind utilities whose
- * radius resolves through the --radius-* custom properties, so zeroing those on
- * :root squares every rounded surface in one move — no per-component class
- * guessing. The few named rules below hit classes confirmed present in the live
- * DOM (.message-bubble, .btn-sweep) plus generic element/attribute selectors.
+ * SCOPE IS A HARD BOUNDARY. The dashboard runs two gates: an install-time
+ * denylist (theme_validate.py) AND a runtime positive allowlist
+ * (scopeOverridesCss in themeCss.ts) that silently DROPS any rule whose
+ * selector group is not on the list below. Passing install is NOT enough —
+ * a rule on an off-allowlist selector installs fine and then never renders.
  *
- * Validated against the installed theme validator (Level 1, installing=True):
- * the overrides content denylist allows any selector plus border-radius and
- * box-shadow; it rejects only injection patterns and layout hijacks (hidden or
- * click-blocked functional elements, viewport-covering fixed layers, runaway
- * z-index) and font pins. No fonts here — those come from theme.json's
+ * Allowed selectors (and nothing else):
+ *   class hooks : .topbar .sidebar .chat-container .message-bubble
+ *                 .input-area .code-block  (chained classes/pseudo-classes on
+ *                 the SAME base are fine, e.g. .message-bubble.msg-content,
+ *                 .input-area:focus-within)
+ *   elements    : bare body (+ body::before / body::after), button.primary
+ *   No *, no :root, no ids, no attribute selectors, no combinators/descendants.
+ *
+ * Consequence: the dashboard's corner radius lives on Tailwind utilities that
+ * resolve through :root --radius-* vars, which this layer CANNOT reach. So the
+ * global radius-zeroing is impossible from a pack; we square the allowlisted
+ * surfaces individually instead. No fonts here — those come from theme.json's
  * role-tagged 'fonts' list so the Font Family preference keeps working. */
 
-/* ---- 1. Flatten everything: zero the radius token scale the UI reads ---- */
-:root {
-  --radius-sm:  0px;
-  --radius-md:  0px;
-  --radius-lg:  0px;
-  --radius-xl:  0px;
-  --radius-2xl: 0px;
-  --radius-3xl: 0px;
+/* ---- Canvas: faint terminal grain + top vignette (decorative, inert) ---- */
+body {
+  position: relative;
 }
-
-/* Belt-and-braces for any literal/inline radius. Shape-only, safe, broad. */
-*, *::before, *::after {
-  border-radius: 0;
-}
-
-/* ---- 2. Hard terminal borders: drop soft shadows for crisp 1px seams ---- */
-button, input, textarea,
-[class*="rounded"],
-[class*="card"],
-[class*="panel"] {
-  box-shadow: none;
-}
-
-/* Primary action: crisp key, hard accent outline, no glow. */
-.btn-sweep,
-button[class*="bg-accent"] {
-  border: 1px solid var(--accent);
-  box-shadow: none;
-}
-
-/* ---- 3. Prompt-line input: square composer ---- */
-textarea {
-  border-radius: 0;
-}
-
-/* ---- 4. Message spacing: agent/user output wrapper padding ----
- * .message-bubble.msg-content is the real wrapper class (confirmed live). */
-.message-bubble.msg-content {
-  padding: 0.6rem 0.85rem;
-}
-
-/* ---- 5. Terminal grain: faint scanline + top vignette on the canvas ----
- * Decorative, inert (pointer-events:none), anchored to body — the one
- * viewport-covering fixed layer the validator permits. */
 body::before {
   content: "";
   position: fixed;
@@ -64,9 +31,73 @@ body::before {
   pointer-events: none;
   z-index: 0;
   background:
-    radial-gradient(120% 60% at 50% 0%,
-      color-mix(in srgb, var(--accent) 7%, transparent) 0%, transparent 55%),
-    repeating-linear-gradient(0deg,
-      color-mix(in srgb, var(--text) 3%, transparent) 0 1px, transparent 1px 3px);
-  opacity: 0.5;
+    radial-gradient(120% 70% at 50% 0%, color-mix(in srgb, var(--accent) 8%, transparent) 0%, transparent 55%),
+    repeating-linear-gradient(0deg, color-mix(in srgb, var(--text) 4%, transparent) 0 1px, transparent 1px 3px);
+  opacity: 0.55;
+}
+
+/* ---- Topbar: terminal titlebar — flat, hard accent underline ---- */
+.topbar {
+  border-radius: 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--accent) 45%, var(--border-strong));
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--accent) 14%, transparent);
+  letter-spacing: 0.02em;
+}
+
+/* ---- Sidebar (session list + members roster): flat panel, hard right seam ---- */
+.sidebar {
+  border-radius: 0;
+  border-right: 1px solid var(--border-strong);
+  background: var(--panel);
+  box-shadow: none;
+}
+
+/* ---- Chat container: flat canvas, no soft corners ---- */
+.chat-container {
+  border-radius: 0;
+  background: var(--bg);
+}
+
+/* ---- Message bubbles: flat terminal blocks, square, hairline border ---- */
+.message-bubble {
+  border-radius: 0;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--accent) 6%, var(--card));
+  box-shadow: none;
+}
+/* Output-wrapper padding (chained class on the same base — passes the scoper). */
+.message-bubble.msg-content {
+  padding: 0.6rem 0.85rem;
+}
+
+/* ---- Code blocks: hard terminal-panel framing, square ---- */
+.code-block {
+  border-radius: 0;
+  border: 1px solid var(--border-strong);
+  background: var(--panel-strong);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--bg) 55%, transparent);
+}
+
+/* ---- Input (composer): prompt line — square, left accent caret rail ---- */
+.input-area {
+  border-radius: 0;
+  border: 1px solid var(--border-strong);
+  border-left: 2px solid color-mix(in srgb, var(--accent) 55%, var(--border-strong));
+  background: var(--panel);
+  box-shadow: none;
+  transition: border-color 120ms ease, box-shadow 120ms ease;
+}
+.input-area:focus-within {
+  border-color: var(--accent);
+  border-left-color: var(--accent);
+  box-shadow: inset 2px 0 0 var(--accent);
+}
+
+/* ---- Primary button: crisp terminal key — square, flat ---- */
+button.primary {
+  border-radius: 0;
+  border: 1px solid color-mix(in srgb, var(--accent) 70%, var(--border-strong));
+  letter-spacing: 0.03em;
+  font-weight: 600;
+  box-shadow: none;
 }
