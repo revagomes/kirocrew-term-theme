@@ -21,9 +21,10 @@ dashboard screens — flat fills, 0px radius, hard 1px borders, ANSI accents, a
 ![Kiro Crew Term (v3) — design direction across the dashboard screens](.github/preview/preview.png)
 
 > **What this pack delivers.** The full palette and fonts everywhere, plus the
-> flat/sharp language (0px radius, hard 1px borders, terminal grain) on the six
-> surfaces a theme pack is allowed to reach: the topbar, sidebar, chat
-> container, message bubbles, composer, and code blocks. Kiro Crew enforces a
+> flat/sharp language (0px radius, hard 1px borders, terminal grain) on the
+> eight surfaces a theme pack is allowed to reach: the topbar, sidebar, chat
+> container, message bubbles, composer, code blocks, the primary button, and
+> the page body (grain). Kiro Crew enforces a
 > **runtime selector allowlist** — an `overrides.css` rule aimed at anything
 > else (a utility class, `*`, `:root`) is silently dropped — so a pack cannot
 > zero the dashboard's global radius tokens or restyle arbitrary components. To
@@ -43,24 +44,24 @@ Re-installing overwrites the previous copy — that is the update path.
 
 ## What it themes
 
-- Palette of 37 variables per polarity (only the three required vars are
-  mandatory; the rest are tuned so surfaces, borders, JSON syntax, and terminal
-  hues read like the v3 TUI). Diff colors are left to the dashboard to
-  auto-derive from each polarity.
+- Palette of 48 variables per polarity (only the three required vars are
+  mandatory; the rest are tuned so surfaces, borders, JSON syntax, diff colors,
+  and terminal hues read like the v3 TUI).
 - Sans face → Sans option; Mono face → Mono option **and** all code surfaces.
-- `styles/overrides.css` applies the flat/sharp language on the six surfaces the
-  runtime allows a pack to target: 0px radius + hard borders on `.topbar`,
+- `styles/overrides.css` applies the flat/sharp language on the eight surfaces
+  the runtime allows a pack to target: 0px radius + hard borders on `.topbar`,
   `.sidebar`, `.chat-container`, `.message-bubble`, `.input-area` and
   `.code-block`, an accent underline on the topbar, a left accent caret-rail on
   the composer (`.input-area:focus-within`), message-wrapper padding
   (`.message-bubble.msg-content`), a flat `button.primary`, and a faint terminal
-  grain on `body`. The dashboard drops any rule outside its allowlist (no `*`,
-  no `:root`, no utility classes), so these are the only surfaces a pack can
-  reach — the userstyle below covers the rest.
+  grain on `body` (including `body::before`/`body::after`). The dashboard drops
+  any rule outside its allowlist (no `*`, no `:root`, no utility classes), so
+  these are the only surfaces a pack can reach — the userstyle below covers the
+  rest.
 
 ## Flat/sharp shape — companion userstyle (for the rest of the dashboard)
 
-The pack flattens the six surfaces it is allowed to target, but the dashboard's
+The pack flattens the eight surfaces it is allowed to target, but the dashboard's
 other rounded chrome (cards, chips, status pills, tab strips) lives on
 framework utility classes a theme pack **cannot** reach — Kiro Crew's runtime
 drops any `overrides.css` rule outside its selector allowlist, including the
@@ -80,7 +81,7 @@ How it works: the dashboard's rounded corners resolve through its own
 `--radius-*` CSS variables. A theme pack cannot touch those (the runtime drops
 `:root` rules), but a browser-side userstyle can — it zeroes `--radius-lg`,
 `--radius-xl`, etc. and squares every surface the pack couldn't reach, in one
-move. It changes **shape only**; the palette, fonts, and the six sanctioned
+move. It changes **shape only**; the palette, fonts, and the eight sanctioned
 surfaces still come from the pack, so the two layers compose.
 
 ### Desktop app (Electron)
