@@ -33,10 +33,21 @@
     "--aim-fg": "#12091f",
     "--term-magenta": "#c6a0ff",
     "--term-cyan": "#66d9d9",
+    "--term-bg": "#0a0b0e",
+    "--term-fg": "#e4e2e9",
+    "--term-cursor": "#c6a0ff",
+    "--term-selection": "rgba(198, 160, 255, 0.22)",
     "--json-key": "#c6a0ff",
     "--json-str": "#4ec98a",
     "--json-num": "#e5b567",
-    "--json-bool": "#6aa8ff"
+    "--json-bool": "#6aa8ff",
+    "--diff-add": "#12281c",
+    "--diff-add-text": "#7fe0ab",
+    "--diff-del": "#2a1114",
+    "--diff-del-text": "#ff9b9d",
+    "--diff-hunk": "#101a2b",
+    "--diff-hunk-text": "#8fbbff",
+    "--diff-meta-text": "#938f9b"
   },
   "light": {
     "--bg": "#faf9fc",
@@ -72,9 +83,20 @@
     "--aim-fg": "#ffffff",
     "--term-magenta": "#7c4dff",
     "--term-cyan": "#1a8a8a",
+    "--term-bg": "#f4f2f8",
+    "--term-fg": "#221f2b",
+    "--term-cursor": "#7c4dff",
+    "--term-selection": "rgba(124, 77, 255, 0.18)",
     "--json-key": "#7c4dff",
     "--json-str": "#1f9d57",
     "--json-num": "#b5771a",
-    "--json-bool": "#2f6fd6"
+    "--json-bool": "#2f6fd6",
+    "--diff-add": "#e3f6ea",
+    "--diff-add-text": "#136d3c",
+    "--diff-del": "#fde6e7",
+    "--diff-del-text": "#a62528",
+    "--diff-hunk": "#e4edfb",
+    "--diff-hunk-text": "#245bb0",
+    "--diff-meta-text": "#6c6779"
   }
 }
