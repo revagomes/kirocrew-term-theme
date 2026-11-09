@@ -4,6 +4,7 @@
   "emoji": "👻",
   "level": 1,
   "formatVersion": 1,
+  "loaderIcons": ["zap", "sparkles", "star", "moon"],
   "fonts": [
     { "family": "Inter", "file": "inter-400.woff2", "weight": 400, "role": "sans" },
     { "family": "Inter", "file": "inter-500.woff2", "weight": 500, "role": "sans" },
